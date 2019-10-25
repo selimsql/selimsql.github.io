@@ -1,1 +1,0 @@
-# selimsql.github.io
