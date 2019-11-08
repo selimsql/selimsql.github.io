@@ -43,12 +43,12 @@
   </div>
 
   <div class="w3-col m10 my-margin-top5px my-margin-bottom5px">
-    <a href="index.html" class="w3-button w3-round-large w3-lime w3-hover-aqua w3-padding-small my-margin-left5px">Main Page</a>
-    <a href="guide.html" class="w3-button w3-round-large w3-lime w3-hover-aqua w3-padding-small my-margin-left5px">User Guide</a>
-    <a href="download.html" class="w3-button w3-round-large w3-lime w3-hover-aqua w3-padding-small my-margin-left5px">Download</a>
-    <a href="java_code.html" class="w3-button w3-round-large w3-lime w3-hover-aqua w3-padding-small my-margin-left5px">Java Code</a>
-    <a href="ssqldbadmin_android.html" class="w3-button w3-round-large w3-lime w3-hover-aqua w3-padding-small my-margin-left5px">Android</a>
-    <a href="contact.html" class="w3-button w3-round-large w3-lime w3-hover-aqua w3-padding-small my-margin-left5px">Contact</a>
+    <a href="index" class="w3-button w3-round-large w3-lime w3-hover-aqua w3-padding-small my-margin-left5px">Main Page</a>
+    <a href="guide" class="w3-button w3-round-large w3-lime w3-hover-aqua w3-padding-small my-margin-left5px">User Guide</a>
+    <a href="download" class="w3-button w3-round-large w3-lime w3-hover-aqua w3-padding-small my-margin-left5px">Download</a>
+    <a href="java_code" class="w3-button w3-round-large w3-lime w3-hover-aqua w3-padding-small my-margin-left5px">Java Code</a>
+    <a href="ssqldbadmin_android" class="w3-button w3-round-large w3-lime w3-hover-aqua w3-padding-small my-margin-left5px">Android</a>
+    <a href="contact" class="w3-button w3-round-large w3-lime w3-hover-aqua w3-padding-small my-margin-left5px">Contact</a>
   </div>
 
   <div class="w3-col w3-container m1 w3-hide-small">
