@@ -1,0 +1,376 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<title>SelimSql Insert/Update/Delete Records</title>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+<meta http-equiv="copyright" content="SelimSql 2009"/>
+<meta name="author" content="Zülkif Güven"/>
+<meta name="description" content="SelimSql database management system"/>
+<meta name="email" content="selimsqldb@gmail.com"/>
+<meta name="distribution" content="global"/>
+<meta name="rating" content="General"/>
+<meta name="resource-type" content="document"/>
+<meta name="clientbase" content="global"/>
+<meta name="audience" content="all"/>
+<meta name="page-type" content="document"/>
+<meta name="content-type" content="HTML"/>
+<meta name="keywords" content="selimsql,jdbc,driver,connection,java,file,database,class,forName,DriverManager,ClassNotFoundException,insert,update,delete,record,executeUpdate,statement,createStatement,autoCommit,prepareStatement,commit"/>
+
+<link href="../../../images/favicon.ico" rel="shortcut icon" type="image/x-icon"/>
+
+<link href="../../../styles/w3.css" media="screen" rel="stylesheet" title="CSS" type="text/css"/>
+<link href="../../../styles/styleExtra.css" media="screen" rel="stylesheet" title="CSS" type="text/css"/>
+</head>
+
+<body>
+<div class="w3-row my-light-teal">
+  <div class="w3-col w3-container m1 w3-hide-small">
+  </div>
+
+  <div class="w3-col w3-container m10">
+    <h1 class="my-font-family my-font-weight-bold">SelimSql</h1>
+    <h3 class="my-font-family my-font-weight-bold">Database Management System</h3>
+  </div>
+
+  <div class="w3-col w3-container m1 w3-hide-small">
+  </div>
+</div>
+
+<div class="w3-row w3-teal">
+  <div class="w3-col w3-container m1 w3-hide-small">
+  </div>
+
+  <div class="w3-col m10 my-margin-top5px my-margin-bottom5px">
+    <a href="../../../index.html" class="w3-button w3-round-large w3-lime w3-hover-aqua w3-padding-small my-margin-left5px">Main Page</a>
+    <a href="../../../guide.html" class="w3-button w3-round-large w3-lime w3-hover-aqua w3-padding-small my-margin-left5px">User Guide</a>
+    <a href="../../../download.html" class="w3-button w3-round-large w3-lime w3-hover-aqua w3-padding-small my-margin-left5px">Download</a>
+    <a href="../../../java_code.html" class="w3-button w3-round-large w3-lime w3-hover-aqua w3-padding-small my-margin-left5px">Java Code</a>
+    <a href="../../../ssqldbadmin_android.html" class="w3-button w3-round-large w3-lime w3-hover-aqua w3-padding-small my-margin-left5px">Android</a>
+    <a href="../../../contact.html" class="w3-button w3-round-large w3-lime w3-hover-aqua w3-padding-small my-margin-left5px">Contact</a>
+  </div>
+
+  <div class="w3-col w3-container m1 w3-hide-small">
+  </div>
+</div>
+      
+      
+<div class="w3-row">
+  <div class="w3-col w3-container m1 w3-hide-small">
+  </div>
+
+  <div class="w3-col my-container m8">
+   <h3>Insert/Update Records With Prepared Statement</h3>
+
+
+<h4>Summary Code Sample</h4>
+
+<pre class="bgrect">
+Class.forName("selimsql.jdbc.DbDriver");
+String url = "jdbc:selimsql:file:TestSale";
+String user = "admin";
+String pass = null; //No password.
+Connection connection = DriverManager.getConnection(url, user, pass);
+
+<b>
+connection.setAutoCommit(false);
+
+String sql = "Insert into Product(Id, Name, Price, ProductDate, Status, Comment, Photo)
+              values(?, ?, ?, ?, ?, ?, ?)";
+preparedStatement = connection.prepareStatement(sql);
+
+java.util.Date dateToday = new java.util.Date();
+Object[] recArray = new Object[]{
+new Object[]{new Integer(11), "Product11", new Double(22.35), dateToday, "A", null, null},
+new Object[]{new Integer(12), "Product12", new Double(32.68), dateToday, "P", null, null},
+new Object[]{new Integer(13), "Product13", new Double(97), dateToday, "A", null, null},
+};
+
+//Insert Product rows ---------------
+int countArray = recArray.length;
+for(short rec=0; rec < countArray; rec++) {
+	Object[] colValues = (Object[])recArray[rec];
+
+	int lenCol = colValues.length;
+	for(short i=0; i < lenCol; i++) {
+		preparedStatement.setObject(i + 1, colValues[i]);
+	}
+
+	preparedStatement.executeUpdate();
+}
+
+connection.commit();
+
+//------------------
+sql = "Update Product set Comment = ?, Photo = ? where Id = ?";
+preparedStatement = connection.prepareStatement(sql);
+preparedStatement.setString(1, "Update Comment Long Description..");
+
+byte[] imageBytes = readFileBinaryAsBytes("./Notebook.png");
+preparedStatement.setBytes(2, imageBytes);
+
+preparedStatement.setInt(3, 13);
+
+int number = preparedStatement.executeUpdate();
+
+connection.commit();
+</b>
+statement.close();
+
+connection.close();
+</pre>
+<br/>
+
+
+<h4>Detail Steps</h4>
+<h4>1. DmlPreparedOpSSqlDb.java</h4>
+<pre class="bgrect">
+package selimsql.test;
+
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+public class DmlPreparedOpSSqlDb {
+
+  private static final String SELIMSQL_JDBC_CLASS      = "selimsql.jdbc.DbDriver";
+  private static final String SELIMSQL_JDBC_URL_HEADER = "jdbc:selimsql:";
+  private static final String SELIMSQL_DB_TYPE_FILE    = "file";
+  private static final String SELIMSQL_DB_TEST_NAME    = "TestDb";
+
+  private static final String TESTDB_USER_ADMIN        = "admin";
+  private static final String TESTDB_PASS_NONE         = null;
+
+  public Connection connectDb(String dbName) {
+    System.out.println("-SelimSql Connection Testing ------");
+    try {
+      Class.forName(SELIMSQL_JDBC_CLASS);
+    }
+    catch(ClassNotFoundException e) {
+      System.out.println("No driver for SelimSql?");
+      return null;
+    }
+    System.out.println("SelimSql JDBC Driver Registered!");
+
+    Connection con = null;
+    try {
+      String url = SELIMSQL_JDBC_URL_HEADER + SELIMSQL_DB_TYPE_FILE + ":" + dbName;
+      con = DriverManager.getConnection(url, TESTDB_USER_ADMIN, TESTDB_PASS_NONE);
+    }
+    catch(SQLException e) {
+      System.out.println("Error while connetion:" + e.getMessage());
+    }
+
+    if (con!=null)
+      System.out.println("Connection succesfull.");
+    else
+      System.out.println("Connection failed!");
+
+    return con;
+  }
+
+  public boolean closeDb(Connection connection) {
+    System.out.println("-SelimSql Closing ------");
+    if (connection==null) {
+      System.out.println("No connection for SelimSql");
+      return false;
+    }
+
+    try {
+      if (connection.isClosed()) {
+        System.out.println("Connection is already closed!");
+        return false;
+      }
+
+      connection.close();
+      System.out.println("Connection closed.");
+      return true;
+    }
+    catch(SQLException e) {
+      return false;
+    }
+  }
+
+  private int preparedStatementExecute(PreparedStatement preparedStatement, Object[] colValues) {
+    try {
+      int lenCol = (colValues==null ? 0 : colValues.length);
+      for(int i=0; i &lt; lenCol; i++) {
+        preparedStatement.setObject(i + 1, colValues[i]);
+      }
+
+      int number = preparedStatement.executeUpdate();
+      System.out.println("-PreparedStatement executed values");
+      System.out.println();
+
+      return number;
+    }
+    catch(SQLException ex) {
+      System.out.println("Error:" + ex.getMessage());
+      return 0;
+    }
+  }
+
+  private byte[] readFileBinaryAsBytes(String fileFullName)
+  {
+    FileInputStream fileInputStream = null;
+    ByteArrayOutputStream baos = null;
+    try
+    {
+      fileInputStream = new FileInputStream(fileFullName);
+      baos = new ByteArrayOutputStream();
+
+      int sizeTemp;
+      byte[] bytesTemp = new byte[1000];
+      while((sizeTemp = fileInputStream.read(bytesTemp)) != -1) {
+        baos.write(bytesTemp, 0, sizeTemp);
+      }
+
+      return baos.toByteArray();
+    }
+    catch(Exception ex) {
+      System.out.println("ReadFileError:" + ex.getMessage());
+      return null;
+    }
+    finally
+    {
+      try {
+        if (fileInputStream!=null) fileInputStream.close();
+        if (baos!=null) baos.close();
+      }
+      catch(IOException ex) {
+        System.out.println("Error:" + ex.getMessage());
+      }
+    }
+  }
+
+  public boolean insertUpdateRecords(Connection connection) throws SQLException {
+    System.out.println("-SelimSql insertUpdate operations ------");
+    PreparedStatement preparedStatement = null;
+    try {
+      connection.setAutoCommit(false);
+      System.out.println("connection.AutoCommit:false");
+
+      String sql = "Insert into Product(Id, Name, Price, ProductDate, Status, Comment, Photo)
+                    values(?, ?, ?, ?, ?, ?, ?)";
+      preparedStatement = connection.prepareStatement(sql);
+      //statement.setMaxRows(100);
+      System.out.println("connection.preparedStatement(sql:" + sql + ") okay.");
+      System.out.println();
+
+      java.util.Date dateToday = new java.util.Date();
+      Object[] recArray = new Object[]{
+       new Object[]{new Integer(11), "Product11", new Double(22.35), dateToday, "A", null, null},
+       new Object[]{new Integer(12), "Product12", new Double(32.68), dateToday, "P", null, null},
+       new Object[]{new Integer(13), "Product13", new Double(97), dateToday, "A", null, null},
+      };
+
+      //Insert Product rows ---------------
+      int countArray = recArray.length;
+      for(short i=0; i &lt; countArray; i++) {
+        Object[] colValues = (Object[])recArray[i];
+        preparedStatementExecute(preparedStatement, colValues);
+      }
+
+      connection.commit();
+      System.out.println("connection.commit okay for inserts");
+
+      //------------------
+      sql = "Update Product set Comment = ?, Photo = ? where Id = ?";
+      preparedStatement = connection.prepareStatement(sql);
+      preparedStatement.setString(1, "Update Comment Long Description..");
+
+      byte[] imageBytes = readFileBinaryAsBytes("./Notebook.png");
+      preparedStatement.setBytes(2, imageBytes);
+
+      preparedStatement.setInt(3, 13);
+
+      int number = preparedStatement.executeUpdate();
+      System.out.println("-PreparedStatement executed for update. Affected row:" + number);
+      System.out.println();
+
+      //------------------
+      connection.commit();
+      System.out.println("connection.commit okay for update");
+    }
+    finally {
+      if (preparedStatement!=null) {
+        preparedStatement.close();
+        System.out.println("connection.preparedStatement closed.");
+      }
+    }
+
+    return (preparedStatement!=null);
+  }
+
+  public static void main(String[] args) {
+    DmlPreparedOpSSqlDb jdbcTest = new DmlPreparedOpSSqlDb();
+    Connection dbConnection = null;
+    try {
+      dbConnection = jdbcTest.connectDb(SELIMSQL_DB_TEST_NAME);
+      jdbcTest.insertUpdateRecords(dbConnection);
+    }
+    catch(SQLException e) {
+      System.out.println("Error:" + e.getMessage());
+    }
+    finally {
+      jdbcTest.closeDb(dbConnection);
+    }
+  }
+}
+</pre>
+<br/><br/>
+
+<h4>2. Compile DmlPreparedOpSSqlDb.java</h4>
+<pre class="bgrect">
+md bin
+javac src/selimsql/test/DmlPreparedOpSSqlDb.java -d bin
+</pre>
+<br/>
+
+
+<h4>3. Download SelimSql JDBC Driver</h4>
+
+Download <a href="../../../download#selimSqlDriver">SelimSqlDriver.jar</a> and put it into "lib" directory.
+<br/><br/><br/>
+
+
+<h4>4. Run DmlPreparedOpSSqlDb</h4>
+<pre class="bgrect">
+java -cp "bin;lib/selimSql-1.2.7.jar" selimsql.test.DmlPreparedOpSSqlDb
+</pre>
+<br/>
+
+
+<h4>Download Source Code</h4>
+
+Download source code: <a href="source/SSqlDbSample.zip">SSqlDbSample.zip</a>
+<br/><br/><br/>
+
+  </div>
+
+  <!--For ADS -->
+  <div class="w3-col m2 w3-center">
+
+  </div>
+
+  <div class="w3-col w3-container m1 w3-hide-small">
+  </div>
+</div>
+
+
+<div class="w3-row">
+  <div class="w3-col w3-container m1 w3-hide-small">
+  </div>
+
+  <div class="w3-col w3-container m8 w3-teal">
+    <p style="text-align:right;font-size:x-small;">Copyright &copy; 2009 - 2019 SelimSql</p>
+  </div>
+
+  <div class="w3-col w3-container m3 w3-hide-small">
+  </div>
+</div>
+
+</body>
+</html>

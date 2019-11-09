@@ -1,0 +1,411 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<title>SelimSql Select Records</title>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+<meta http-equiv="copyright" content="SelimSql 2009"/>
+<meta name="author" content="Zülkif Güven"/>
+<meta name="description" content="SelimSql database management system"/>
+<meta name="email" content="selimsqldb@gmail.com"/>
+<meta name="distribution" content="global"/>
+<meta name="rating" content="General"/>
+<meta name="resource-type" content="document"/>
+<meta name="clientbase" content="global"/>
+<meta name="audience" content="all"/>
+<meta name="page-type" content="document"/>
+<meta name="content-type" content="HTML"/>
+<meta name="keywords" content="selimsql,jdbc,driver,connection,java,file,database,class,forName,DriverManager,ClassNotFoundException,select,record,executeQuery,resultSet,statement,createStatement,getBinaryStream,InputStream"/>
+
+<link href="../../../images/favicon.ico" rel="shortcut icon" type="image/x-icon"/>
+
+<link href="../../../styles/w3.css" media="screen" rel="stylesheet" title="CSS" type="text/css"/>
+<link href="../../../styles/styleExtra.css" media="screen" rel="stylesheet" title="CSS" type="text/css"/>
+</head>
+
+<body>
+<div class="w3-row my-light-teal">
+  <div class="w3-col w3-container m1 w3-hide-small">
+  </div>
+
+  <div class="w3-col w3-container m10">
+    <h1 class="my-font-family my-font-weight-bold">SelimSql</h1>
+    <h3 class="my-font-family my-font-weight-bold">Database Management System</h3>
+  </div>
+
+  <div class="w3-col w3-container m1 w3-hide-small">
+  </div>
+</div>
+
+<div class="w3-row w3-teal">
+  <div class="w3-col w3-container m1 w3-hide-small">
+  </div>
+
+  <div class="w3-col m10 my-margin-top5px my-margin-bottom5px">
+    <a href="../../../index.html" class="w3-button w3-round-large w3-lime w3-hover-aqua w3-padding-small my-margin-left5px">Main Page</a>
+    <a href="../../../guide.html" class="w3-button w3-round-large w3-lime w3-hover-aqua w3-padding-small my-margin-left5px">User Guide</a>
+    <a href="../../../download.html" class="w3-button w3-round-large w3-lime w3-hover-aqua w3-padding-small my-margin-left5px">Download</a>
+    <a href="../../../java_code.html" class="w3-button w3-round-large w3-lime w3-hover-aqua w3-padding-small my-margin-left5px">Java Code</a>
+    <a href="../../../ssqldbadmin_android.html" class="w3-button w3-round-large w3-lime w3-hover-aqua w3-padding-small my-margin-left5px">Android</a>
+    <a href="../../../contact.html" class="w3-button w3-round-large w3-lime w3-hover-aqua w3-padding-small my-margin-left5px">Contact</a>
+  </div>
+
+  <div class="w3-col w3-container m1 w3-hide-small">
+  </div>
+</div>
+
+
+<div class="w3-row">
+  <div class="w3-col w3-container m1 w3-hide-small">
+  </div>
+
+  <div class="w3-col my-container m8">
+   <h3>Select Records</h3>
+
+<h4>Summary Code Sample</h4>
+
+<pre class="bgrect">
+Class.forName("selimsql.jdbc.DbDriver");
+String url = "jdbc:selimsql:file:TestSale";
+String user = "admin";
+String pass = null; //No password.
+Connection connection = DriverManager.getConnection(url, user, pass);
+<b>
+Statement statement = connection.createStatement();
+
+String sql = "select * from Product where Id > 0";
+ResultSet resultSet = statement.executeQuery(sql);
+int row = 0;
+while(resultSet.next())
+{
+	row++;
+	int recId = resultSet.getInt("Id");
+	System.out.print(row + ". ProductId:" + recId);
+
+	System.out.print(", Name:" + resultSet.getString("Name"));
+	System.out.print(", Price:" + resultSet.getBigDecimal("Price"));
+	System.out.print(", ProductDate:" + resultSet.getDate("ProductDate"));
+	System.out.print(", Status:" + resultSet.getString("Status"));
+	System.out.print(", Comment:" + resultSet.getString("Comment"));
+
+	InputStream inputStreamPhoto = resultSet.getBinaryStream("Photo");
+	System.out.println(", Photo:" + inputStreamPhoto);
+
+	String fileFullName = "./MyPhoto" + recId + ".png";
+	boolean status = writeFileBinary(fileFullName, inputStreamPhoto);
+	if (status)
+		System.out.println("Write file:" + fileFullName + " okay");
+
+	System.out.println();
+}
+</b>
+statement.close();
+
+connection.close();
+</pre>
+<br/>
+
+
+<h4>Detail Steps</h4>
+<h4>1. SelectRecSSqlDb.java</h4>
+<pre class="bgrect">
+package selimsql.test;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+public class SelectRecSSqlDb {
+
+  private static final String SELIMSQL_JDBC_CLASS      = "selimsql.jdbc.DbDriver";
+  private static final String SELIMSQL_JDBC_URL_HEADER = "jdbc:selimsql:";
+  private static final String SELIMSQL_DB_TYPE_FILE    = "file";
+  private static final String SELIMSQL_DB_TEST_NAME    = "TestDb";
+
+  private static final String TESTDB_USER_ADMIN        = "admin";
+  private static final String TESTDB_PASS_NONE         = null;
+
+  public Connection connectDb(String dbName) {
+    System.out.println("-SelimSql Connection Testing ------");
+    try {
+      Class.forName(SELIMSQL_JDBC_CLASS);
+    }
+    catch(ClassNotFoundException e) {
+      System.out.println("No driver for SelimSql?");
+      return null;
+    }
+    System.out.println("SelimSql JDBC Driver Registered!");
+
+    Connection con = null;
+    try {
+      String url = SELIMSQL_JDBC_URL_HEADER + SELIMSQL_DB_TYPE_FILE + ":" + dbName;
+      con = DriverManager.getConnection(url, TESTDB_USER_ADMIN, TESTDB_PASS_NONE);
+    }
+    catch(SQLException e) {
+      System.out.println("Error while connetion:" + e.getMessage());
+    }
+
+    if (con!=null)
+      System.out.println("Connection succesfull.");
+    else
+      System.out.println("Connection failed!");
+
+    return con;
+  }
+
+  public boolean closeDb(Connection connection) {
+    System.out.println("-SelimSql Closing ------");
+    if (connection==null) {
+      System.out.println("No connection for SelimSql");
+      return false;
+    }
+
+    try {
+      if (connection.isClosed()) {
+        System.out.println("Connection is already closed!");
+        return false;
+      }
+
+      connection.close();
+      System.out.println("Connection closed.");
+      return true;
+    }
+    catch(SQLException e) {
+      return false;
+    }
+  }
+
+  private boolean writeFileBinary(String fileFullName, InputStream inputStream)
+  {
+    if (fileFullName==null || inputStream==null)
+      return false;
+
+    FileOutputStream fileOutputStream = null;
+    try
+    {
+      fileOutputStream = new FileOutputStream(fileFullName);
+
+      int lenRead;
+      byte[] byteBuf = new byte[1000];
+      while((lenRead = inputStream.read(byteBuf)) != -1) {
+        fileOutputStream.write(byteBuf, 0, lenRead);
+      }
+
+      return true;
+    }
+    catch(Exception ex) {
+      System.out.println("WriteFileError:" + ex.getMessage());
+      return false;
+    }
+    finally
+    {
+      try {
+        if (inputStream!=null) inputStream.close();
+        if (fileOutputStream!=null) fileOutputStream.close();
+      }
+      catch(IOException ex) {
+        System.out.println("Error:" + ex.getMessage());
+      }
+    }
+  }
+
+
+  public boolean selectProductRecords(Connection connection) throws SQLException {
+    System.out.println();
+    System.out.println("-SelimSql selectOrderRecords operations ------");
+    Statement statement = null;
+    try {
+      statement = connection.createStatement();
+      System.out.println("connection.statement okay.");
+
+      String sql = "select * from Product where Id &gt; 0";
+      ResultSet resultSet = statement.executeQuery(sql);
+      int row = 0;
+      while(resultSet.next())
+      {
+        row++;
+        int recId = resultSet.getInt("Id");
+        System.out.print(row + ". ProductId:" + recId);
+        System.out.print(", Name:" + resultSet.getString("Name"));
+        System.out.print(", Price:" + resultSet.getBigDecimal("Price"));
+        System.out.print(", ProductDate:" + resultSet.getDate("ProductDate"));
+        System.out.print(", Status:" + resultSet.getString("Status"));
+        System.out.print(", Comment:" + resultSet.getString("Comment"));
+
+        InputStream inputStreamPhoto = resultSet.getBinaryStream("Photo");
+        System.out.println(", Photo:" + inputStreamPhoto);
+
+        String fileFullName = "./MyPhoto" + recId + ".png";
+        boolean status = writeFileBinary(fileFullName, inputStreamPhoto);
+        if (status)
+          System.out.println("Write file:" + fileFullName + " okay");
+
+        System.out.println();
+      }
+    }
+    finally {
+      if (statement!=null) {
+        statement.close();
+        System.out.println("connection.statement closed.");
+      }
+    }
+    return (statement!=null);
+  }
+
+  public boolean selectOrderRecords(Connection connection) throws SQLException {
+    System.out.println();
+    System.out.println("-SelimSql selectOrderRecords operations ------");
+    Statement statement = null;
+    try {
+      statement = connection.createStatement();
+      System.out.println("connection.statement okay.");
+
+      String sql = "select * from Order where OrderAmount&gt;=3 and Status='A'";
+      ResultSet resultSet = statement.executeQuery(sql);
+      int row = 0;
+      while(resultSet.next())
+      {
+        row++;
+        System.out.print(row + ". OrderId:" + resultSet.getInt(1));
+        System.out.print(", CustomerId:" + resultSet.getInt(2));
+        System.out.print(", ProductId:" + resultSet.getInt(3));
+        System.out.print(", OrderDate:" + resultSet.getDate(4));
+        System.out.print(", OrderAmount:" + resultSet.getShort(5));
+        System.out.print(", UnitPrice:" + resultSet.getDouble(6));
+        System.out.println(", PaymentType:" + resultSet.getString(7));
+        System.out.println();
+      }
+    }
+    finally {
+      if (statement!=null) {
+        statement.close();
+        System.out.println("connection.statement closed.");
+      }
+    }
+    return (statement!=null);
+  }
+
+  public static void main(String[] args) {
+    SelectRecSSqlDb jdbcTest = new SelectRecSSqlDb();
+    Connection dbConnection = null;
+    try {
+      dbConnection = jdbcTest.connectDb(SELIMSQL_DB_TEST_NAME);
+      jdbcTest.selectProductRecords(dbConnection);
+      jdbcTest.selectOrderRecords(dbConnection);
+    }
+    catch(SQLException e) {
+      System.out.println("Error:" + e.getMessage());
+    }
+    finally {
+      jdbcTest.closeDb(dbConnection);
+    }
+  }
+}
+</pre>
+<br/><br/>
+
+<h4>2. Compile SelectRecSSqlDb.java</h4>
+<pre class="bgrect">
+md bin
+javac src/selimsql/test/SelectRecSSqlDb.java -d bin
+</pre>
+<br/>
+
+
+<h4>3. Download SelimSql JDBC Driver</h4>
+
+Download <a href="../../../download#selimSqlDriver">SelimSqlDriver.jar</a> and put it into "lib" directory.
+<br/><br/><br/>
+
+
+<h4>4. Run SelectRecSSqlDb</h4>
+<pre class="bgrect">
+java -cp "bin;lib/selimSql-1.2.7.jar" selimsql.test.SelectRecSSqlDb
+</pre>
+
+<pre class="bgrect">
+C:\JdbcTest>java -cp "bin;lib/selimSql-1.2.7.jar" selimsql.test.SelectRecSSqlDb
+-SelimSql Connection Testing ------
+SelimSql JDBC Driver Registered!
+Connection succesfull.
+
+-SelimSql selectOrderRecords operations ------
+connection.statement okay.
+1. ProductId:1, Name:Product1, Price:12.35, ProductDate:2014-11-20, Status:A,
+Comment:Product1 Comment Description Long., Photo:null
+
+<b>
+2. ProductId:2, Name:Product2, Price:23.68, ProductDate:2014-11-19, Status:P,
+Comment:Product2 Comment Description Long., Photo:SDbInStream:14493 bytes
+Write file:./MyPhoto2.png okay
+</b>
+
+3. ProductId:3, Name:Product3, Price:80.79, ProductDate:2014-11-18, Status:A,
+Comment:Product3 Comment Description Long., Photo:null
+
+4. ProductId:11, Name:Product11, Price:22.35, ProductDate:2014-11-20, Status:A,
+Comment:null, Photo:null
+
+5. ProductId:12, Name:Product12, Price:32.68, ProductDate:2014-11-20, Status:P,
+Comment:null, Photo:null
+
+6. ProductId:13, Name:Product13, Price:97.00, ProductDate:2014-11-20, Status:A,
+Comment:Update Comment Long Description.., Photo:SDbInStream:14493 bytes
+Write file:./MyPhoto13.png okay
+
+connection.statement closed.
+
+-SelimSql selectOrderRecords operations ------
+connection.statement okay.
+1. OrderId:102, CustomerId:11, ProductId:2, OrderDate:2014-11-17, OrderAmount:3,
+UnitPrice:5.0, PaymentType:CREDIT
+
+2. OrderId:105, CustomerId:12, ProductId:2, OrderDate:2014-11-13, OrderAmount:5,
+UnitPrice:5.0, PaymentType:CASH
+
+3. OrderId:106, CustomerId:13, ProductId:3, OrderDate:2014-11-14, OrderAmount:6,
+UnitPrice:7.65, PaymentType:CREDIT
+
+connection.statement closed.
+-SelimSql Closing ------
+Connection closed.
+</pre>
+<br/>
+
+<h4>Download Source Code</h4>
+
+Download source code: <a href="source/SSqlDbSample.zip">SSqlDbSample.zip</a>
+<br/><br/><br/>
+
+
+<h4>Proposal</h4>
+Download the tool <a href="../../../download#SSqlDeveloper">SSqlDeveloper</a> to query pratically.
+<br/><br/>
+  </div>
+
+  <!--For ADS -->
+  <div class="w3-col m2 w3-center">
+
+  </div>
+
+  <div class="w3-col w3-container m1 w3-hide-small">
+  </div>
+</div>
+
+<div class="w3-row">
+  <div class="w3-col w3-container m1 w3-hide-small">
+  </div>
+
+  <div class="w3-col w3-container m8 w3-teal">
+    <p style="text-align:right;font-size:x-small;">Copyright &copy; 2009 - 2019 SelimSql</p>
+  </div>
+
+  <div class="w3-col w3-container m3 w3-hide-small">
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,332 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<title>SelimSql Build Tables and Indexes</title>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+<meta http-equiv="copyright" content="SelimSql 2009"/>
+<meta name="author" content="Zülkif Güven"/>
+<meta name="description" content="SelimSql database management system"/>
+<meta name="email" content="selimsqldb@gmail.com"/>
+<meta name="distribution" content="global"/>
+<meta name="rating" content="General"/>
+<meta name="resource-type" content="document"/>
+<meta name="clientbase" content="global"/>
+<meta name="audience" content="all"/>
+<meta name="page-type" content="document"/>
+<meta name="content-type" content="HTML"/>
+<meta name="keywords" content="selimsql,jdbc,driver,connection,java,file,database,class,forName,DriverManager,ClassNotFoundException,create,table,index,statement,executeUpdate"/>
+
+<link href="../../../images/favicon.ico" rel="shortcut icon" type="image/x-icon"/>
+
+<link href="../../../styles/w3.css" media="screen" rel="stylesheet" title="CSS" type="text/css"/>
+<link href="../../../styles/styleExtra.css" media="screen" rel="stylesheet" title="CSS" type="text/css"/>
+</head>
+
+<body>
+<div class="w3-row my-light-teal">
+  <div class="w3-col w3-container m1 w3-hide-small">
+  </div>
+
+  <div class="w3-col w3-container m10">
+    <h1 class="my-font-family my-font-weight-bold">SelimSql</h1>
+    <h3 class="my-font-family my-font-weight-bold">Database Management System</h3>
+  </div>
+
+  <div class="w3-col w3-container m1 w3-hide-small">
+  </div>
+</div>
+
+<div class="w3-row w3-teal">
+  <div class="w3-col w3-container m1 w3-hide-small">
+  </div>
+
+  <div class="w3-col m10 my-margin-top5px my-margin-bottom5px">
+    <a href="../../../index.html" class="w3-button w3-round-large w3-lime w3-hover-aqua w3-padding-small my-margin-left5px">Main Page</a>
+    <a href="../../../guide.html" class="w3-button w3-round-large w3-lime w3-hover-aqua w3-padding-small my-margin-left5px">User Guide</a>
+    <a href="../../../download.html" class="w3-button w3-round-large w3-lime w3-hover-aqua w3-padding-small my-margin-left5px">Download</a>
+    <a href="../../../java_code.html" class="w3-button w3-round-large w3-lime w3-hover-aqua w3-padding-small my-margin-left5px">Java Code</a>
+    <a href="../../../ssqldbadmin_android.html" class="w3-button w3-round-large w3-lime w3-hover-aqua w3-padding-small my-margin-left5px">Android</a>
+    <a href="../../../contact.html" class="w3-button w3-round-large w3-lime w3-hover-aqua w3-padding-small my-margin-left5px">Contact</a>
+  </div>
+
+  <div class="w3-col w3-container m1 w3-hide-small">
+  </div>
+</div>
+      
+<div class="w3-row">
+  <div class="w3-col w3-container m1 w3-hide-small">
+  </div>
+
+  <div class="w3-col my-container m8">
+   <h3>Build Tables and Indexes</h3>
+
+<h4>Summary Code Sample</h4>
+
+<pre class="bgrect">
+Class.forName("selimsql.jdbc.DbDriver");
+String url = "jdbc:selimsql:file:TestSale";
+String user = "admin";
+String pass = null; //No password.
+Connection connection = DriverManager.getConnection(url, user, pass);
+<b>
+Statement statement = connection.createStatement();
+String sql = "CREATE TABLE Product"
+			+ " (Id INTEGER NOT NULL,"
+			+ " Name VARCHAR(20) NOT NULL,"
+			+ " Price DECIMAL(15, 2) NOT NULL,"
+			+ " ProductDate DATE NOT NULL,"
+			+ " Status CHAR NOT NULL,"
+			+ " Comment LONGTEXT,"
+			+ " Photo BLOB)";
+
+statement.executeUpdate(sql);
+</b>
+statement.close();
+connection.close();
+</pre>
+<br/>
+
+
+<h4>Detail Steps</h4>
+<h4>1. CreateTableSSqlDb.java</h4>
+<pre class="bgrect">
+package selimsql.test;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+public class CreateTableSSqlDb {
+
+  private static final String SELIMSQL_JDBC_CLASS      = "selimsql.jdbc.DbDriver";
+  private static final String SELIMSQL_JDBC_URL_HEADER = "jdbc:selimsql:";
+  private static final String SELIMSQL_DB_TYPE_FILE    = "file";
+  private static final String SELIMSQL_DB_TEST_NAME    = "TestDb";
+
+  private static final String TESTDB_USER_ADMIN        = "admin";
+  private static final String TESTDB_PASS_NONE         = null;
+
+  public Connection connectDb(String dbName) {
+    System.out.println("-SelimSql Connection Testing ------");
+    try {
+      Class.forName(SELIMSQL_JDBC_CLASS);
+    }
+    catch(ClassNotFoundException e) {
+      System.out.println("No driver for SelimSql?");
+      return null;
+    }
+    System.out.println("SelimSql JDBC Driver Registered!");
+
+    Connection con = null;
+    try {
+      String url = SELIMSQL_JDBC_URL_HEADER + SELIMSQL_DB_TYPE_FILE + ":" + dbName;
+      con = DriverManager.getConnection(url, TESTDB_USER_ADMIN, TESTDB_PASS_NONE);
+    }
+    catch(SQLException e) {
+      System.out.println("Error while connetion:" + e.getMessage());
+    }
+
+    if (con!=null)
+      System.out.println("Connection succesfull.");
+    else
+      System.out.println("Connection failed!");
+
+    return con;
+  }
+
+  public boolean closeDb(Connection connection) {
+    System.out.println("-SelimSql Closing ------");
+    if (connection==null) {
+      System.out.println("No connection for SelimSql");
+      return false;
+    }
+
+    try {
+      if (connection.isClosed()) {
+        System.out.println("Connection is already closed!");
+        return false;
+      }
+
+      connection.close();
+      System.out.println("Connection closed.");
+      return true;
+    }
+    catch(SQLException e) {
+      return false;
+    }
+  }
+
+  public boolean createTablesAndIndexes(Connection connection) throws SQLException {
+    System.out.println("-SelimSql createTablesAndIndexes ------");
+    Statement statement = null;
+    try {
+      statement = connection.createStatement();
+      System.out.println("connection.statement okay.");
+
+      String sql = "CREATE TABLE Product"
+            + " (Id INTEGER NOT NULL,"
+            + " Name VARCHAR(20) NOT NULL,"
+            + " Price DECIMAL(15, 2) NOT NULL,"
+            + " ProductDate DATE NOT NULL,"
+            + " Status CHAR NOT NULL,"
+            + " Comment LONGTEXT,"
+            + " Photo BLOB)";
+
+      //statement.executeUpdate(sql);
+      statement.executeUpdate(sql);
+      System.out.println("-Statement Sql executed:");
+      System.out.println(sql);
+      System.out.println();
+
+      sql = "CREATE UNIQUE INDEX ProductPk ON Product(Id)";
+      statement.executeUpdate(sql);
+      System.out.println("-Statement Sql executed:");
+      System.out.println(sql);
+      System.out.println();
+
+
+      sql = "Create Table Customer"
+        + " (Id INTEGER NOT NULL,"
+        + " EntryDate DATE NOT NULL,"
+        + " Name VARCHAR(20) NOT NULL,"
+        + " Surname VARCHAR(20) NOT NULL,"
+        + " Sex CHAR NOT NULL,"
+        + " Job VARCHAR(30),"
+        + " Email VARCHAR(30))";
+      statement.executeUpdate(sql);
+      System.out.println("-Statement Sql executed:");
+      System.out.println(sql);
+      System.out.println();
+
+      sql = "CREATE UNIQUE INDEX CustomerPk ON Customer(Id)";
+      statement.executeUpdate(sql);
+      System.out.println("-Statement Sql executed:");
+      System.out.println(sql);
+      System.out.println();
+
+      sql = "CREATE INDEX CustomerNameIdx ON Customer(Name, Surname)";
+      statement.executeUpdate(sql);
+      System.out.println("-Statement Sql executed:");
+      System.out.println(sql);
+      System.out.println();
+
+
+      sql = "Create Table Order"
+        + " (Id INTEGER NOT NULL,"
+        + " CustomerId INTEGER NOT NULL,"
+        + " ProductId INTEGER NOT NULL,"
+        + " OrderDate DATE NOT NULL,"
+        + " OrderAmount SMALLINT NOT NULL,"
+        + " UnitPrice DECIMAL(15, 2) NOT NULL,"
+        + " PaymentType VARCHAR(10) NOT NULL,"
+        + " Status VARCHAR(10) NOT NULL)";
+      statement.executeUpdate(sql);
+      System.out.println("-Statement Sql executed:");
+      System.out.println(sql);
+      System.out.println();
+
+      sql = "CREATE UNIQUE INDEX OrderPk ON Order(Id)";
+      statement.executeUpdate(sql);
+      System.out.println("-Statement Sql executed:");
+      System.out.println(sql);
+      System.out.println();
+
+      sql = "CREATE INDEX OrderCusIdx ON Order(CustomerId)";
+      statement.executeUpdate(sql);
+      System.out.println("-Statement Sql executed:");
+      System.out.println(sql);
+      System.out.println();
+
+      sql = "CREATE INDEX OrderDateIdx ON Order(OrderDate)";
+      statement.executeUpdate(sql);
+      System.out.println("-Statement Sql executed:");
+      System.out.println(sql);
+      System.out.println();
+    }
+    finally {
+      if (statement!=null) {
+        statement.close();
+        System.out.println("connection.statement closed.");
+      }
+    }
+    return (statement!=null);
+  }
+
+  public static void main(String[] args) {
+    CreateTableSSqlDb jdbcTest = new CreateTableSSqlDb();
+    Connection dbConnection = null;
+    try {
+      dbConnection = jdbcTest.connectDb(SELIMSQL_DB_TEST_NAME);
+      jdbcTest.createTablesAndIndexes(dbConnection);
+    }
+    catch(SQLException e) {
+      System.out.println("Error:" + e.getMessage());
+    }
+    finally {
+      jdbcTest.closeDb(dbConnection);
+    }
+  }
+}
+</pre>
+<br/><br/>
+
+<h4>2. Compile CreateTableSSqlDb.java</h4>
+<pre class="bgrect">
+md bin
+javac src/selimsql/test/CreateTableSSqlDb.java -d bin
+</pre>
+<br/>
+
+
+<h4>3. Download SelimSql JDBC Driver</h4>
+
+Download <a href="../../../download#selimSqlDriver">SelimSqlDriver.jar</a> and put it into "lib" directory.
+<br/><br/><br/>
+
+
+<h4>4. Run CreateTableSSqlDb</h4>
+<pre class="bgrect">
+java -cp "bin;lib/selimSql-1.2.7.jar" selimsql.test.CreateTableSSqlDb
+</pre>
+<br/>
+
+
+<h4>Download Source Code</h4>
+
+Download source code: <a href="source/SSqlDbSample.zip">SSqlDbSample.zip</a>
+<br/><br/><br/>
+</div>
+
+  <!--For ADS -->
+  <div class="w3-col m2 w3-center">
+   <!--Ex
+   <div class="w3-red w3-margin-bottom" style="height:200px;">
+    Ads1
+   </div>
+   <div class="w3-green w3-margin-bottom" style="height:200px;">
+    Ads2
+   </div>
+   <div class="w3-blue w3-margin-bottom" style="height:200px;">
+    Ads3
+   </div>
+   -->
+  </div>
+
+  <div class="w3-col w3-container m1 w3-hide-small">
+  </div>
+</div>
+
+<div class="w3-row">
+  <div class="w3-col w3-container m1 w3-hide-small">
+  </div>
+
+  <div class="w3-col w3-container m8 w3-teal">
+    <p style="text-align:right;font-size:x-small;">Copyright &copy; 2009 - 2019 SelimSql</p>
+  </div>
+
+  <div class="w3-col w3-container m3 w3-hide-small">
+  </div>
+</div>
+
+</body>
+</html>

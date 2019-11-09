@@ -1,0 +1,1448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Spring MVC Hibernate JPA</title>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+<meta http-equiv="copyright" content="SelimSql 2018"/>
+<meta name="author" content="Zülkif Güven"/>
+<meta name="description" content="SelimSql database management system"/>
+<meta name="email" content="selimsqldb@gmail.com"/>
+<meta name="distribution" content="global"/>
+<meta name="rating" content="General"/>
+<meta name="resource-type" content="document"/>
+<meta name="clientbase" content="global"/>
+<meta name="audience" content="all"/>
+<meta name="page-type" content="document"/>
+<meta name="content-type" content="HTML"/>
+<meta name="keywords" content="spring,mvc,ORM,JPA,hibernate,CRUD,maven,dao,controller,JDBC,validate,java,datasource,database,configuration,web,application,initializer,selimsql"/>
+
+<link href="../../images/favicon.ico" rel="shortcut icon" type="image/x-icon"/>
+
+<link href="../../styles/w3.css" media="screen" rel="stylesheet" title="CSS" type="text/css"/>
+<link href="../../styles/styleExtra.css" media="screen" rel="stylesheet" title="CSS" type="text/css"/>
+</head>
+
+<body>
+<div class="w3-row my-light-teal">
+  <div class="w3-col w3-container m1 w3-hide-small">
+  </div>
+
+  <div class="w3-col w3-container m10">
+    <h1 class="my-font-family my-font-weight-bold">SelimSql</h1>
+    <h3 class="my-font-family my-font-weight-bold">Database Management System</h3>
+  </div>
+
+  <div class="w3-col w3-container m1 w3-hide-small">
+  </div>
+</div>
+
+<div class="w3-row w3-teal">
+  <div class="w3-col w3-container m1 w3-hide-small">
+  </div>
+
+  <div class="w3-col m10 my-margin-top5px my-margin-bottom5px">
+    <a href="../../index.html" class="w3-button w3-round-large w3-lime w3-hover-aqua w3-padding-small my-margin-left5px">Main Page</a>
+    <a href="../../guide.html" class="w3-button w3-round-large w3-lime w3-hover-aqua w3-padding-small my-margin-left5px">User Guide</a>
+    <a href="../../download.html" class="w3-button w3-round-large w3-lime w3-hover-aqua w3-padding-small my-margin-left5px">Download</a>
+    <a href="../../java_code.html" class="w3-button w3-round-large w3-lime w3-hover-aqua w3-padding-small my-margin-left5px">Java Code</a>
+    <a href="../../ssqldbadmin_android.html" class="w3-button w3-round-large w3-lime w3-hover-aqua w3-padding-small my-margin-left5px">Android</a>
+    <a href="../../contact.html" class="w3-button w3-round-large w3-lime w3-hover-aqua w3-padding-small my-margin-left5px">Contact</a>
+  </div>
+
+  <div class="w3-col w3-container m1 w3-hide-small">
+  </div>
+</div>
+
+
+<div class="w3-row">
+  <div class="w3-col w3-container m1 w3-hide-small">
+  </div>
+
+  <div class="w3-col my-container m8">
+<h2>Spring MVC + Hibernate JPA + CRUD Example</h2>
+<h6 class="marginAuthorDate">By Zülkif Güven | May 1, 2018</h6>
+
+In this tutorial, Spring MVC, ORM, JPA and Hibernate techniques are explained.
+
+<br><br>
+<h4><u>Brief Description of Terminology</u></h4>
+
+<b>Object-Relational Mapping(ORM)</b> is a process of mapping java objects and database tables.
+<br>ORM has many advantages over JDBC, some of them:
+<ul>
+ <li>Access objects rather than DB tables.</li>
+ <li>Hides details of SQL queries.</li>
+ <li>Transaction management and automatic key generation.</li>
+</ul>
+
+<br>
+<b>Java Persistence API(JPA)</b> is one of the possible approaches to ORM.
+JPA has several popular implementations like Hibernate, Apache OpenJPA and EclipseLink.
+Persistence metadata is used to map between java objects and database tables.
+JPA typically defines the metadata via annotations in the Java class.
+Alternatively the metadata can be defined via XML.
+<br>In this example annotations are used.
+
+<br><br>
+<b>Hibernate</b> is an ORM solution for Java.
+It is an open source persistent framework.
+It is a high performance Object-Relational persistence and Query service for Java applications.
+Hibernate maps database tables to java classes.
+It uses various Java APIs, like JDBC, Java Transaction API(JTA) and Java Naming and Directory Interface (JNDI).
+
+<br><br>
+Some of Hibernate Advantages:
+<ul>
+ <li>Provides simple APIs for retrieving java objects directly from the database.</li>
+ <li>Provides simple APIs for storing java objects directly to the database.</li>
+ <li>Manipulates complex associations of database objects.</li>
+ <li>Minimizes database access by smart fetching strategies.</li>
+ <li>Simplifies querying of database data.</li>
+</ul>
+
+<b>JDBC</b> is acronym of Java Database Connectivity.
+
+<br><br>
+<b>CRUD</b> is acronym of Create, Retrieve, Update, Delete.
+
+
+<br><br><br>
+<h4><u>Used Technologies</u></h4>
+<ul>
+ <li>Java JDK 1.7+</li>
+ <li>Eclipse 4.6+
+ <br>or Spring Tool Suite(STS)</li>
+ <li>Spring Framework 4.0</li>
+ <li>Maven 3</li>
+ <li>JSTL 1.2</li>
+ <li>SelimSQL Database 1.2.7</li>
+</ul>
+
+
+<br><br>
+<h4><u>Project Main View</u></h4>
+This sample web application explains the CRUD operations on USER table:
+
+<br><br>
+<img border='0' src='image_spring_mvc_hibernate_jpa_ssql_user_crud_example/UserList.png'/>
+<br><br><br>
+
+
+<h3>1. Building SelimSQL Database</h3>
+Build a new database and user table by executing the following script.
+<br>
+For executing script, you can download and install this tool: <a href="../../download#SSqlDeveloper">SelimSQL Database Developer</a>
+
+<br/><br/>
+<h4>a) Build a new database using SSqlDeveloper tool:</h4>
+<pre class="lang-sql">
+JDBC Class: selimsql.jdbc.DbDriver
+JDBC.Url  : <b>jdbc:selimsql:fileNewDatabase:/MyData/MyDb</b>
+<i>
+Press the "Connect" button.
+Enter the user and password of you.
+
+(jdbc.username): admin
+(jdbc.password) may be empty!</i>
+</pre>
+<br/>
+
+<h4>b) Build a new table and related indexes by executing the following 5 scripts one by one:</h4>
+<pre class="lang-sql">
+Create Table User (
+  Id integer NOT NULL,
+  Code VARCHAR(20) NOT NULL,
+  Name VARCHAR(20) NOT NULL,
+  Surname VARCHAR(20) NOT NULL,
+  Password VARCHAR(20) NOT NULL,
+  Email VARCHAR(50) NOT NULL,
+  Phone VARCHAR(20),
+  Status SmallInt NOT NULL
+);
+<i>--Note: Select the script above and press "Sql Execute" button.</i>
+
+Create Unique Index UserPK On User(Id);
+Create Unique Index UserCodeUIdx On User(Code);
+Create Unique Index UserEmailUIdx On User(Email);
+
+Create Sequence SEQ_USERPK;
+</pre>
+<br/>
+
+<h4>c) Insert a User row example(optional):</h4>
+<pre class="lang-sql">
+Insert into User(Id, Code, Name, Surname, Email, Password, Phone, Status)
+Values(SequenceNextValue('SEQ_USERPK'), 'admin', 'Admin', 'Admin', 'admin@test.com', 'admin', null, 1);
+</pre>
+<br/>
+
+<h4>d) After the execution of script;</h4>
+check "src\main\resources\spring\application.properties" named config file in project as follow:</b>
+
+<pre class="lang-sql">
+jdbc.driverClassName=selimsql.jdbc.DbDriver
+
+#Database jdbc connection url that you have just built:
+jdbc.url=<b>jdbc:selimsql:file:C:/MyData/MyDb</b>
+jdbc.username=admin
+
+#Database user password that you have entered:
+jdbc.password=[may be empty]
+</pre>
+<br/><br/>
+
+
+
+<h3>2. Project Maven Dependency</h3>
+Add spring framework and necessary database dependencies in Maven pom.xml file:
+
+<pre class="lang-markup">
+<code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"&gt;
+
+  &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+  &lt;groupId&gt;com.selimsql.lesson&lt;/groupId&gt;
+  &lt;artifactId&gt;SpringMvcHibernateJPA&lt;/artifactId&gt;
+  &lt;name&gt;SpringMvcHibernateJPA&lt;/name&gt;
+  &lt;packaging&gt;war&lt;/packaging&gt;
+  &lt;version&gt;1.0-SNAPSHOT&lt;/version&gt;
+
+  &lt;properties&gt;
+    &lt;!-- Generic properties --&gt;
+    &lt;java.version&gt;1.7&lt;/java.version&gt;
+	<b>
+    &lt;springframework.version&gt;4.0.6.RELEASE&lt;/springframework.version&gt;
+
+    &lt;hibernate.version&gt;4.3.6.Final&lt;/hibernate.version&gt;
+
+    &lt;!-- Database:SelimSql --&gt;
+    &lt;selimSqlDb.version&gt;1.2.7&lt;/selimSqlDb.version&gt;</b>
+
+    &lt;!-- Web --&gt;
+    &lt;javax.servlet.version&gt;3.1.0&lt;/javax.servlet.version&gt;
+    &lt;javax.jsp.version&gt;2.3.1&lt;/javax.jsp.version&gt;
+    &lt;jstl.version&gt;1.2&lt;/jstl.version&gt;
+  &lt;/properties&gt;
+
+
+  &lt;dependencies&gt;
+    &lt;!-- Spring --&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+      &lt;artifactId&gt;spring-webmvc&lt;/artifactId&gt;
+      &lt;version&gt;${springframework.version}&lt;/version&gt;
+    &lt;/dependency&gt;
+	<b>
+    &lt;!-- Spring ORM --&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+      &lt;artifactId&gt;spring-orm&lt;/artifactId&gt;
+      &lt;version&gt;${springframework.version}&lt;/version&gt;
+    &lt;/dependency&gt;
+
+    &lt;!-- Hibernate --&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;org.hibernate&lt;/groupId&gt;
+      &lt;artifactId&gt;hibernate-core&lt;/artifactId&gt;
+      &lt;version&gt;${hibernate.version}&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;org.hibernate&lt;/groupId&gt;
+      &lt;artifactId&gt;hibernate-validator&lt;/artifactId&gt;
+      &lt;version&gt;5.1.3.Final&lt;/version&gt;
+    &lt;/dependency&gt;</b>
+
+    &lt;!-- For BasicDataSource --&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;commons-dbcp&lt;/groupId&gt;
+      &lt;artifactId&gt;commons-dbcp&lt;/artifactId&gt;
+      &lt;version&gt;1.4&lt;/version&gt;
+    &lt;/dependency&gt;
+
+
+    &lt;!-- Servlet + JSP + JSTL --&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;javax.servlet&lt;/groupId&gt;
+      &lt;artifactId&gt;javax.servlet-api&lt;/artifactId&gt;
+      &lt;version&gt;${javax.servlet.version}&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;javax.servlet.jsp&lt;/groupId&gt;
+      &lt;artifactId&gt;javax.servlet.jsp-api&lt;/artifactId&gt;
+      &lt;version&gt;${javax.jsp.version}&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;javax.servlet&lt;/groupId&gt;
+        &lt;artifactId&gt;jstl&lt;/artifactId&gt;
+        &lt;version&gt;${jstl.version}&lt;/version&gt;
+    &lt;/dependency&gt;
+
+
+    &lt;!-- jsr303 validation --&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;javax.validation&lt;/groupId&gt;
+      &lt;artifactId&gt;validation-api&lt;/artifactId&gt;
+      &lt;version&gt;1.1.0.Final&lt;/version&gt;
+    &lt;/dependency&gt;
+
+	<b>
+    &lt;!-- SelimSql database driver --&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;selimSql&lt;/groupId&gt;
+      &lt;artifactId&gt;selimSql&lt;/artifactId&gt;
+      &lt;version&gt;${selimSqlDb.version}&lt;/version&gt;
+    &lt;/dependency&gt;</b>
+
+  &lt;/dependencies&gt;
+
+  <b>
+  &lt;!-- For Download SelimSql Database Driver --&gt;
+  &lt;repositories&gt;
+    &lt;repository&gt;
+      &lt;id&gt;com.selimsql.database.driver.release&lt;/id&gt;
+      &lt;name&gt;SelimSql Database Driver Repository&lt;/name&gt;
+      &lt;url&gt;http://www.selimsql.com/release&lt;/url&gt;
+    &lt;/repository&gt;
+  &lt;/repositories&gt;</b>
+
+
+  &lt;build&gt;
+    &lt;finalName&gt;SpringMvcHibernateJPA&lt;/finalName&gt;
+    &lt;pluginManagement&gt;
+      &lt;plugins&gt;
+        &lt;plugin&gt;
+              &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+              &lt;artifactId&gt;maven-compiler-plugin&lt;/artifactId&gt;
+              &lt;version&gt;3.0&lt;/version&gt;
+              &lt;configuration&gt;
+                  &lt;source&gt;${java.version}&lt;/source&gt;
+                  &lt;target&gt;${java.version}&lt;/target&gt;
+                  &lt;showWarnings&gt;true&lt;/showWarnings&gt;
+              &lt;/configuration&gt;
+          &lt;/plugin&gt;
+
+        &lt;plugin&gt;
+          &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+          &lt;artifactId&gt;maven-war-plugin&lt;/artifactId&gt;
+          &lt;version&gt;2.3&lt;/version&gt;
+          &lt;configuration&gt;
+            &lt;!--
+            &lt;warSourceDirectory&gt;src/main/webapp&lt;/warSourceDirectory&gt;
+            &lt;warName&gt;SpringMvcHibernateJPA&lt;/warName&gt;
+            --&gt;
+            &lt;failOnMissingWebXml&gt;false&lt;/failOnMissingWebXml&gt;
+          &lt;/configuration&gt;
+        &lt;/plugin&gt;
+      &lt;/plugins&gt;
+    &lt;/pluginManagement&gt;
+  &lt;/build&gt;
+&lt;/project&gt;
+</code>
+</pre>
+<br/><br/>
+
+
+<h3>3. Table Row Data Model</h3>
+Add a User named persistence class to implement user’s data:
+
+<pre class="lang-java">
+package <b>com.selimsql.lesson.domain</b>;
+
+import java.io.Serializable;
+
+@Entity
+@Table(name="User")
+public class User implements Serializable {
+
+  private static final long serialVersionUID = 7847427564396352348L;
+
+  @Id
+  @Column(name="Id", unique=true, nullable=false)
+  private Integer id; //uses SEQ_USERPK to get new Id!
+
+  @Column(name="Code", unique=true, nullable=false, length=20)
+  private String code;
+
+  @Column(name="Name", nullable=false, length=20)
+  private String name;
+
+  @Column(name="Surname", nullable=false, length=20)
+  private String surname;
+
+  @Column(name="Password", nullable=false, length=20)
+  private String password;
+
+  @Column(name="Email", unique=true, nullable=false, length=50)
+  private String email;
+
+  @Column(name="Phone", length=20)
+  private String phone;
+
+  @Column(name="Status", nullable=false)
+  private Integer status;
+
+  //Getter and Setter methods..
+}
+</pre>
+<br/><br/>
+
+
+
+<h3>4. Data Access Object(DAO) Layer</h3>
+User DAO interface class:
+
+<pre class="lang-java">
+package <b>com.selimsql.lesson.dao</b>;
+
+import java.util.List;
+
+import com.selimsql.lesson.domain.User;
+import com.selimsql.lesson.dto.UserDTO;
+
+public interface <b>UserDao</b> {
+
+  List&lt;User&gt; queryUserList(UserDTO userDTO);
+
+  User findById(Integer id);
+
+  User findByCode(String code);
+
+  User findByEmail(String email);
+
+  int getNextIdFromSequence();
+
+  void insertOrUpdateRow(User row);
+
+  void updateRow(User row);
+
+  void deleteRow(User row);
+}
+</pre>
+<br/>
+
+<br>
+User Dao implementation class for Hibernate JPA operations:
+
+<pre class="lang-java">
+package <b>com.selimsql.lesson.dao</b>;
+
+import java.util.List;
+
+import org.hibernate.Criteria;
+import org.hibernate.SQLQuery;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
+
+import com.selimsql.lesson.domain.User;
+import com.selimsql.lesson.dto.UserDTO;
+import com.selimsql.lesson.util.Util;
+<b>
+@Repository("userDao")
+public class UserDaoImp implements UserDao {
+
+  @Autowired
+  private SessionFactory sessionFactory;
+
+  private Session getSession() {
+    return sessionFactory.getCurrentSession();
+  }
+
+  private Criteria createEntityCriteria(){
+    return getSession().createCriteria(User.class);
+  }</b>
+
+  public User getByKey(Integer key) {
+    return (User) getSession().get(User.class, key);
+  }
+
+  @SuppressWarnings("unchecked")
+  <b>@Override
+  public List&lt;User&gt; queryUserList(UserDTO userDTO)</b> {
+    Criteria criteria = createEntityCriteria();
+
+    String code = userDTO.getCode();
+    if (StringUtils.hasLength(code))
+      criteria.add(Restrictions.ilike("code", code + "%"));
+
+    String name = userDTO.getName();
+    if (StringUtils.hasLength(name))
+      criteria.add(Restrictions.ilike("name", name + "%"));
+
+    String surname = userDTO.getSurname();
+    if (StringUtils.hasLength(surname))
+      criteria.add(Restrictions.ilike("surname", surname + "%"));
+
+    criteria.addOrder(Order.asc("name"));
+
+    List&lt;User&gt; list = criteria.list();
+
+    return list;
+  }
+
+  @Override
+  public User findById(Integer id) {
+    User user = getByKey(id);
+    return user;
+  }
+
+  @Override
+  public User findByCode(String code) {
+    Criteria criteria = createEntityCriteria();
+    criteria.add(Restrictions.eq("code", code));
+    User user = (User)criteria.uniqueResult();
+    return user;
+  }
+
+  @Override
+  public User findByEmail(String email) {
+    Criteria criteria = createEntityCriteria();
+    criteria.add(Restrictions.eq("email", email));
+    User user = (User)criteria.uniqueResult();
+    return user;
+  }
+<b>
+  @Override
+  public int getNextIdFromSequence()</b> {
+    String sql = "Select SequenceNextValue(SequenceName)"
+          + "  From _DB_Sequence Where SequenceName = 'SEQ_USERPK'";
+
+    SQLQuery sqlQuery = getSession().createSQLQuery(sql);
+    Object objNextId = sqlQuery.uniqueResult();
+    return Util.getInt(objNextId);
+  }
+<b>
+  @Override
+  public void insertOrUpdateRow(User row)</b> {
+    getSession().save(row);
+  }
+<b>
+  @Override
+  public void updateRow(User row)</b> {
+    getSession().merge(row);
+  }
+<b>
+  @Override
+  public void deleteRow(User row)</b> {
+    getSession().delete(row);
+  }
+}
+</pre>
+<br/><br/>
+
+
+
+<h3>5. Service Layer</h3>
+User Service Implementation:
+
+<pre class="lang-java">
+package <b>com.selimsql.lesson.service</b>;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.Errors;
+import org.springframework.validation.ValidationUtils;
+
+import com.selimsql.lesson.dao.UserDao;
+import com.selimsql.lesson.domain.User;
+import com.selimsql.lesson.dto.UserDTO;
+import com.selimsql.lesson.util.Util;
+
+<b>@Service("userService")
+@Transactional(propagation = Propagation.REQUIRED, readOnly = true, rollbackFor = Throwable.class)
+public class UserServiceImp implements UserService</b> {
+
+  @Autowired
+  private UserDao userDao;
+
+  @Override
+  public List&lt;User&gt; queryUserList(UserDTO userDTO) {
+    List&lt;User&gt; list = userDao.queryUserList(userDTO);
+    return list;
+  }
+
+  @Override
+  public User findById(Integer id) {
+    User user = userDao.findById(id);
+    return user;
+  }
+
+  @Override
+  public User findByCode(String code) {
+    User user = userDao.findByCode(code);
+    return user;
+  }
+
+  @Override
+  public User findByEmail(String email) {
+    User user = userDao.findByEmail(email);
+    return user;
+  }
+
+  <b>@Override
+  @Transactional(readOnly=false)
+  public boolean newUserSave(User user, BindingResult result)</b> {
+    final boolean addUser = true;
+    validateNewData(user, addUser, result);
+
+    if (result.hasErrors())
+      return false;
+
+    insertOrUpdateRow(user);
+    return true;
+  }
+
+  private void <b>validateNewData</b>(User user, boolean add, Errors errors) {
+    String code = (user==null ? null : user.getCode());
+    if (Util.isEmpty(code)) {
+      errors.rejectValue("code", "required.Code");
+    }
+    else {
+      User userBefore = findByCode(code);
+      if (userBefore!=null) {
+        if (add) {
+          errors.rejectValue("code", "Row.codeX.already.exist.Please.enter.different.code", new Object[]{code}, "Error");
+        }
+        else
+        //if (update)
+        if (Util.isNotEqual(user.getId(), userBefore.getId()))
+        {
+          errors.rejectValue("code", "message.generic", new Object[]{"UserCode:" + code + " has already been defined!"}, "Error");
+        }
+      }
+
+      String codeSmoothed = Util.codeFromStr(code);
+      if (Util.isNotEqual(code, codeSmoothed)) {
+        errors.rejectValue("code", "message.generic", new Object[]{"Code is invalid! Suggestion code:" + codeSmoothed}, "Error");
+      }
+    }
+
+    //------------------------------
+    String email = (user==null ? null : user.getEmail());
+    if (Util.isEmpty(email)) {
+      errors.rejectValue("email", "required.Email");
+    }
+    else {
+      User userBefore = findByEmail(email);
+      if (userBefore!=null) {
+        if (add) {
+          errors.rejectValue("email", "Row.emailX.already.exist.Please.enter.different.email", new Object[]{email}, "Error");
+        }
+        else
+        //if (update)
+        if (Util.isNotEqual(user.getId(), userBefore.getId()))
+        {
+          errors.rejectValue("email", "message.generic", new Object[]{"UserEmail:" + email + " has already been defined!"}, "Error");
+        }
+      }
+
+      if (Util.isEMailValid(email)==false) {
+        errors.rejectValue("email", "invalid.Email");
+      }
+    }
+
+    ValidationUtils.rejectIfEmpty(errors, "name", "required.Name");
+    ValidationUtils.rejectIfEmpty(errors, "surname", "required.Surname");
+    ValidationUtils.rejectIfEmpty(errors, "password", "required.Password");
+    ValidationUtils.rejectIfEmpty(errors, "status", "required.Status");
+  }//validate_NewData
+
+  <b>@Override
+  @Transactional(readOnly=false)
+  public void insertOrUpdateRow(User row)</b> {
+    if (row.getId()==null) {
+      Integer idSeq = userDao.getNextIdFromSequence();
+      row.setId(idSeq);
+    }
+
+    userDao.insertOrUpdateRow(row);
+  }
+
+
+  <b>@Override
+  @Transactional(readOnly=false)
+  public boolean updateUserSave(User user, BindingResult result)</b> {
+    final boolean addUser = false; //update!
+    validateNewData(user, addUser, result);
+
+    if (result.hasErrors())
+      return false;
+
+    updateRow(user);
+    return true;
+  }
+
+  <b>@Override
+  @Transactional(readOnly=false)
+  public void updateRow(User row)</b> {
+    userDao.updateRow(row);
+  }
+
+  <b>@Override
+  @Transactional(readOnly=false)
+  public void deleteRow(User row)</b> {
+    userDao.deleteRow(row);
+  }
+}
+</pre>
+<br/><br/>
+
+
+
+
+<h3>6. Controller Layer</h3>
+User controller service:
+Scope is session based for keeping every user query parameters.
+User CRUD operations are validated also.
+
+<pre class="lang-java">
+package <b>com.selimsql.lesson.controller</b>;
+
+import java.io.Serializable;
+import java.util.List;
+
+import javax.validation.Valid;
+
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import com.selimsql.lesson.configuration.SpringAppContext;
+import com.selimsql.lesson.constant.Constants;
+import com.selimsql.lesson.constant.StatusEnum;
+import com.selimsql.lesson.domain.User;
+import com.selimsql.lesson.dto.UserDTO;
+import com.selimsql.lesson.exceptions.CustomRuntimeException;
+import com.selimsql.lesson.util.Util;
+<b>
+@Controller
+@Scope(value = "session")
+public class UserController implements Serializable</b> {
+
+  private static final long   serialVersionUID   = 1L;
+
+  private static final String VIEW_userList      = "userList";
+  private static final String VIEW_userRow       = "userRow";
+  private static final String VIEW_userRowSuccess= "userRowSuccess";
+
+  private UserDTO userDTO;
+  private List&lt;User&gt; listUser;
+
+
+  private UserController() {
+    super();
+    resetUserDTO();
+  }
+
+  private UserDTO resetUserDTO() {
+    this.userDTO = new UserDTO(); //Empty query params at first!
+    return userDTO;
+  }
+
+  private List&lt;User&gt; resetListUser() {
+    this.listUser = null; //Empty list at first!
+    return listUser;
+  }
+<b>
+  @RequestMapping(value = { "/", "/home", "/userList" }, method = RequestMethod.GET)
+  public String userListFirst(ModelMap model)</b> {
+    resetListUser();
+    return userListShow(model);
+  }
+<b>
+  @RequestMapping(value = "/userQuery", method = RequestMethod.POST)
+  public String userQuery(@Valid UserDTO userDTO, ModelMap model)</b> {
+    this.userDTO = userDTO;
+    this.listUser = SpringAppContext.getUserServiceBean().queryUserList(userDTO);
+    return userListShow(model);
+  }
+
+  @RequestMapping(value = "/userListShow", method = RequestMethod.GET)
+  //In: this.userDTO
+  //In: this.listUser
+  public String userListShow(ModelMap model) {
+    model.addAttribute("userDTO", userDTO);
+    model.addAttribute("listUser", listUser);
+    return VIEW_userList;
+  }
+
+  @RequestMapping(value = "/userListRefresh", method = RequestMethod.GET)
+  public String userListRefresh(ModelMap model) {
+    this.listUser = SpringAppContext.getUserServiceBean().queryUserList(userDTO);
+    return userListShow(model);
+  }
+
+  /**
+   * This method will provide the page to add a new user.
+   */
+  <b>@RequestMapping(value = "/newUser", method = RequestMethod.GET)
+  public String newUser(ModelMap model)</b> {
+    User user = new User();
+    user.setId(null); //On Insert: Id from SEQ_USERPK
+    user.setStatus(StatusEnum.ACTIVE.getValue());
+
+    model.addAttribute("user", user);
+    model.addAttribute("operation", Constants.AUTHORITYVALUE_Add);
+
+    return VIEW_userRow;
+  }
+
+  /**
+   * This method will be called on form submission, handling POST request for
+   * inserting user in database. It also validates the user input
+   */
+  <b>@RequestMapping(value = "/newUser", method = RequestMethod.POST)
+  public String newUserSave(@Valid User user, BindingResult result, ModelMap model)</b> {
+    boolean status = SpringAppContext.getUserServiceBean().newUserSave(user, result);
+    if (status) {
+      model.addAttribute("success", "UserId:" + user.getId() + ", " + user.getName() + " " + user.getSurname() + " row has been added.");
+      return VIEW_userRowSuccess;
+    }
+
+    //On Error:
+    model.addAttribute("operation", Constants.AUTHORITYVALUE_Add);
+    return VIEW_userRow;
+  }
+
+  <b>@RequestMapping(value = "/showUser-{id}", method = RequestMethod.GET)
+  public String showUser(@PathVariable String id, ModelMap model)</b> {
+    Integer userId = Integer.valueOf(Util.getInt(id));
+    User user = SpringAppContext.getUserServiceBean().findById(userId);
+    if (user==null)
+      throw new CustomRuntimeException("PU", "UserId:" + userId + " row is absent!");
+
+    model.addAttribute("user", user);
+    model.addAttribute("operation", Constants.AUTHORITYVALUE_Show);
+
+    return VIEW_userRow;
+  }
+
+  /**
+   * This method will provide page to update an existing user.
+   */
+  <b>@RequestMapping(value = "/updateUser-{id}", method = RequestMethod.GET)
+  public String updateUser(@PathVariable String id, ModelMap model)</b> {
+    Integer userId = Integer.valueOf(Util.getInt(id));
+    User user = SpringAppContext.getUserServiceBean().findById(userId);
+    if (user==null)
+      throw new CustomRuntimeException("PU", "UserId:" + userId + " row is absent!");
+
+    model.addAttribute("user", user);
+    model.addAttribute("operation", Constants.AUTHORITYVALUE_Update);
+
+    return VIEW_userRow;
+  }
+
+  /*
+   * This method will be called on form submission, handling POST request for
+   * updating user in database. It also validates the user input.
+   */
+  <b>@RequestMapping(value = "/updateUser-{id}", method = RequestMethod.POST)
+  public String updateUserSave(@Valid User user, BindingResult result, ModelMap model, @PathVariable String id)</b> {
+    boolean status = SpringAppContext.getUserServiceBean().updateUserSave(user, result);
+    if (status) {
+      model.addAttribute("success", "UserId:" + id + ", " + user.getName() + " " + user.getSurname() + " row has been updated.");
+      return VIEW_userRowSuccess;
+    }
+
+    //On Error:
+    model.addAttribute("operation", Constants.AUTHORITYVALUE_Update);
+    return VIEW_userRow;
+  }
+
+  /*
+   * This method will provide page to delete an existing user.
+   */
+  <b>@RequestMapping(value = "/deleteUser-{id}", method = RequestMethod.GET)
+  public String deleteUser(@PathVariable String id, ModelMap model)</b> {
+    Integer userId = Integer.valueOf(Util.getInt(id));
+    User user = SpringAppContext.getUserServiceBean().findById(userId);
+    if (user==null)
+      throw new CustomRuntimeException("PU", "UserId:" + userId + " row is absent!");
+
+    model.addAttribute("user", user);
+    model.addAttribute("operation", Constants.AUTHORITYVALUE_Delete);
+
+    return VIEW_userRow;
+  }
+
+  /*
+   * This method will be called on form submission, handling POST request for
+   * deleting user in database. It also validates the user input.
+   */
+  <b>@RequestMapping(value = "/deleteUser-{id}", method = RequestMethod.POST)
+  public String deleteUserSave(@Valid User user, BindingResult result, ModelMap model, @PathVariable String id)</b> {
+    SpringAppContext.getUserServiceBean().deleteRow(user);
+    model.addAttribute("success", "UserId:" + id + ", " + user.getName() + " " + user.getSurname() + " row has been deleted.");
+    return VIEW_userRowSuccess;
+  }
+}
+</pre>
+<br/><br/>
+
+
+
+<h3>7. Application Home Page</h3>
+"userList.jsp" named file is home page. UserController directs the flow to this page.
+<br>
+This page displays the user list with insert, update and delete action links.
+
+<pre class="lang-java">
+&lt;%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%&gt;
+&lt;%@ page trimDirectiveWhitespaces="true"%&gt;
+
+&lt;%@ taglib prefix="f" uri="http://www.springframework.org/tags/form"%&gt;
+&lt;%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%&gt;
+&lt;%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%&gt;
+
+&lt;!DOCTYPE html&gt;
+&lt;html lang='en'&gt;
+&lt;head&gt;
+ &lt;jsp:include page="/WEB-INF/viewsCommon/htmlHeader.jsp"/&gt;
+&lt;/head&gt;
+
+&lt;body&gt;
+
+&lt;div class="generic-container"&gt;
+
+&lt;!-- Default panel contents --&gt;
+&lt;h2&gt;
+ &lt;span&gt;User List&lt;/span&gt;
+&lt;/h2&gt;
+
+ &lt;c:url value="/userQuery" var="actionUrl"/&gt;
+ <b>&lt;f:form method="POST" action="${actionUrl}" modelAttribute="userDTO"&gt;</b>
+ &lt;table&gt;
+   &lt;tr&gt;
+      &lt;td align="right"&gt;Code&lt;/td&gt;
+      &lt;td&gt;
+         &lt;f:input type="text" path="code" id="code"/&gt;
+      &lt;/td&gt;
+
+      &lt;td align="right"&gt;Name&lt;/td&gt;
+      &lt;td&gt;
+         &lt;f:input type="text" path="name" id="name"/&gt;
+      &lt;/td&gt;
+
+      &lt;td align="right"&gt;Surname&lt;/td&gt;
+      &lt;td&gt;
+         &lt;f:input type="text" path="surname" id="surname"/&gt;
+      &lt;/td&gt;
+   &lt;/tr&gt;
+
+   &lt;tr&gt;
+      &lt;td&gt;&nbsp;&lt;/td&gt;
+      &lt;td colspan="3"&gt;
+         &lt;input type="submit" value="Query"/&gt;
+
+         &nbsp;&nbsp;
+         &lt;a href="&lt;c:url value='/newUser'/&gt;"&gt;New User&lt;/a&gt;
+      &lt;/td&gt;
+   &lt;/tr&gt;
+ &lt;/table&gt;
+ &lt;/f:form&gt;
+
+&lt;br/&gt;
+&lt;table&gt;
+    &lt;thead&gt;
+    &lt;tr&gt;
+        &lt;th align="right"&gt;Id&lt;/th&gt;
+        &lt;th align="left"&gt;Code&lt;/th&gt;
+        &lt;th align="left"&gt;Name&lt;/th&gt;
+        &lt;th align="left"&gt;Surname&lt;/th&gt;
+        &lt;th align="left"&gt;Email&lt;/th&gt;
+        &lt;th align="center"&gt;Status&lt;/th&gt;
+        &lt;th align="left"&gt;Operation&lt;/th&gt;
+    &lt;/tr&gt;
+   &lt;/thead&gt;
+
+    &lt;tbody&gt;
+ <b>&lt;c:forEach items="${listUser}" var="user"&gt;
+      &lt;tr&gt;
+         &lt;td align="right"&gt;${user.id}&lt;/td&gt;
+         &lt;td align="left"&gt;${user.code}&lt;/td&gt;
+         &lt;td align="left"&gt;${user.name}&lt;/td&gt;
+         &lt;td align="left"&gt;${user.surname}&lt;/td&gt;
+         &lt;td align="left"&gt;${user.email}&lt;/td&gt;
+         &lt;td align="center"&gt;&lt;fmt:message key="Status${user.status}"/&gt;&lt;/td&gt;
+
+         &lt;td&gt;
+          &lt;a href="&lt;c:url value='/showUser-${user.id}'/&gt;"&gt;Show&lt;/a&gt;
+          &lt;a href="&lt;c:url value='/updateUser-${user.id}'/&gt;"&gt;Update&lt;/a&gt;
+          &lt;a href="&lt;c:url value='/deleteUser-${user.id}'/&gt;"&gt;Delete&lt;/a&gt;
+         &lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/c:forEach&gt;</b>
+     &lt;/tbody&gt;
+   &lt;/table&gt;
+&lt;/div&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<br/><br/>
+
+
+
+<h3>8. Row Edit Form Page</h3>
+"userRow.jsp" named file is for CRUD page.
+UserController directs the flow to this page for insert, update or delete the row.
+<br>
+User add/update operations are validated like this:
+
+<br><br>
+<img border='0' src='image_spring_mvc_hibernate_jpa_ssql_user_crud_example/UserAddValidate.png'/>
+<br><br>
+
+<pre class="lang-java">
+&lt;%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%&gt;
+&lt;%@ page trimDirectiveWhitespaces="true"%&gt;
+
+&lt;%@ taglib prefix="f" uri="http://www.springframework.org/tags/form"%&gt;
+&lt;%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%&gt;
+&lt;%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%&gt;
+
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+ &lt;jsp:include page="/WEB-INF/viewsCommon/htmlHeader.jsp"/&gt;
+&lt;/head&gt;
+
+&lt;body&gt;
+&lt;div class="container"&gt;
+
+&lt;h3&gt;User Row(${operation})&lt;/h3&gt;
+
+&lt;br/&gt;
+&lt;f:form method="POST" modelAttribute="user"&gt;
+   &lt;table&gt;
+    &lt;tr&gt;
+      &lt;td align="right"&gt;Id (*)&lt;/td&gt;
+      &lt;td&gt;
+         <b>&lt;c:choose&gt;
+            &lt;c:when test="${operation eq 'Add'}"&gt;
+               [AUTO]
+            &lt;/c:when&gt;
+            &lt;c:otherwise&gt;
+               ${user.id}
+            &lt;/c:otherwise&gt;
+         &lt;/c:choose&gt;</b>
+      &lt;/td&gt;
+    &lt;/tr&gt;
+
+
+    &lt;tr&gt;
+      &lt;td align="right"&gt;Name (*)&lt;/td&gt;
+      &lt;td&gt;
+         &lt;f:input type="text" path="name" id="name"/&gt;
+         &lt;f:errors path="name" class="has-error"/&gt;
+      &lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr&gt;
+      &lt;td align="right"&gt;Surname (*)&lt;/td&gt;
+      &lt;td&gt;
+         &lt;f:input type="text" path="surname" id="surname"/&gt;
+         &lt;f:errors path="surname" class="has-error"/&gt;
+      &lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr&gt;
+      &lt;td align="right"&gt;Code (*)&lt;/td&gt;
+      &lt;td&gt;
+         &lt;f:input type="text" path="code" id="code"/&gt;
+         &lt;f:errors path="code" class="has-error"/&gt;
+      &lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr&gt;
+      &lt;td align="right"&gt;Password (*)&lt;/td&gt;
+      &lt;td&gt;
+         &lt;f:input type="password" path="password" id="password"/&gt;
+         &lt;f:errors path="password" class="has-error"/&gt;
+      &lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr&gt;
+      &lt;td align="right"&gt;Email (*)&lt;/td&gt;
+      &lt;td&gt;
+         &lt;f:input type="text" path="email" id="email"/&gt;
+         &lt;f:errors path="email" class="has-error"/&gt;
+      &lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr&gt;
+      &lt;td align="right"&gt;Telephone&lt;/td&gt;
+      &lt;td&gt;
+         &lt;f:input type="text" path="phone" id="phone"/&gt;
+      &lt;/td&gt;
+    &lt;/tr&gt;
+
+
+    &lt;tr&gt;
+      &lt;td align="right"&gt;Status (*)&lt;/td&gt;
+      &lt;td&gt;
+         &lt;f:select path="status" id="status"&gt;
+            &lt;f:option value="1"&gt;&lt;fmt:message key="Status1"/&gt;&lt;/f:option&gt;
+            &lt;f:option value="0"&gt;&lt;fmt:message key="Status0"/&gt;&lt;/f:option&gt;
+            &lt;f:option value="9"&gt;&lt;fmt:message key="Status9"/&gt;&lt;/f:option&gt;
+         &lt;/f:select&gt;
+         &lt;f:errors path="status" class="has-error"/&gt;
+      &lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr&gt;
+      &lt;td&gt;&nbsp;&lt;/td&gt;
+      &lt;td&gt;
+       &lt;c:choose&gt;
+         &lt;c:when test="${operation eq 'Show'}"&gt;
+            &lt;a href="&lt;c:url value='/userListShow'/&gt;"&gt;Okay&lt;/a&gt;
+         &lt;/c:when&gt;
+         &lt;c:otherwise&gt;
+            &lt;input type="submit" value="${operation}"/&gt;
+            &nbsp; or &nbsp;
+            &lt;a href="&lt;c:url value='/userListShow'/&gt;"&gt;Cancel&lt;/a&gt;
+         &lt;/c:otherwise&gt;
+       &lt;/c:choose&gt;
+      &lt;/td&gt;
+    &lt;/tr&gt;
+   &lt;/table&gt;
+&lt;/f:form&gt;
+
+&lt;/div&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<br/><br/>
+
+
+
+
+<h3>9. Spring MVC Root Application Configuration</h3>
+"RootConfig.java" class is for root application configuration:
+
+<pre class="lang-java">
+package <b>com.selimsql.lesson.configuration</b>;
+
+import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.web.servlet.ViewResolver;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.view.InternalResourceViewResolver;
+import org.springframework.web.servlet.view.JstlView;
+<b>
+@Configuration
+@EnableWebMvc
+@ComponentScan(basePackages = "com.selimsql.lesson")
+public class RootConfig extends WebMvcConfigurerAdapter</b> {
+
+   @Bean
+   public ViewResolver viewResolver() {
+      InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
+      viewResolver.setViewClass(JstlView.class);
+      viewResolver.setPrefix("/WEB-INF/views/");
+      viewResolver.setSuffix(".jsp");
+      return viewResolver;
+   }
+
+    /**
+     * Configure MessageSource to lookup any validation/error message in internationalized property files
+     */
+   @Bean
+   public MessageSource messageSource() {
+       ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
+       messageSource.setBasename("messages/messages");
+       return messageSource;
+   }
+
+   /**
+     * Configure ResourceHandlers to serve static resources like CSS/Javascript etc...
+     */
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/static/**").addResourceLocations("/static/");
+    }
+}
+</pre>
+<br/><br/>
+
+
+
+<h3>10. Application Database Hibernate Session/DataSource Configuration</h3>
+"HibernateConfiguration.java" class is for database hibernate datasource configuration:
+
+<pre class="lang-java">
+package <b>com.selimsql.lesson.configuration</b>;
+
+import java.util.Properties;
+
+import javax.sql.DataSource;
+
+import org.apache.commons.dbcp.BasicDataSource;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
+import org.springframework.orm.hibernate4.HibernateTransactionManager;
+import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+
+<b>
+@Configuration
+@EnableTransactionManagement
+@ComponentScan({ "com.selimsql.lesson.configuration" })
+@PropertySource(value = { "classpath:spring/application.properties" })
+public class HibernateConfiguration {</b>
+
+  @Autowired
+  private Environment environment;
+
+  <b>@Bean
+  public LocalSessionFactoryBean sessionFactory() {</b>
+    LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
+    sessionFactory.setDataSource(dataSource());
+    sessionFactory.setPackagesToScan(new String[] { "com.selimsql.lesson.domain" });
+    sessionFactory.setHibernateProperties(hibernateProperties());
+    return sessionFactory;
+  }
+
+  <b>@Bean
+  public DataSource dataSource() {</b>
+    BasicDataSource dataSource = new BasicDataSource(); //Uses Poolable Connection.
+
+    String driverClassName = environment.getProperty("jdbc.driverClassName");
+    dataSource.setDriverClassName(driverClassName);
+
+    String driverUrl = environment.getProperty("jdbc.url");
+    dataSource.setUrl(driverUrl);
+
+    String user = environment.getProperty("jdbc.username");
+    dataSource.setUsername(user);
+
+    String pass = environment.getProperty("jdbc.password");
+    dataSource.setPassword(pass);
+
+    return dataSource;
+  }
+
+  <b>@Bean
+  public Properties hibernateProperties() {</b>
+    Properties properties = new Properties();
+    String key = "hibernate.dialect";
+    String dialect = environment.getRequiredProperty(key);
+    properties.put(key, dialect);
+
+    key = "hibernate.show_sql";
+    String showSql = environment.getRequiredProperty(key);
+    properties.put(key, showSql);
+
+    key = "hibernate.format_sql";
+    String formatSql = environment.getRequiredProperty(key);
+    properties.put(key, formatSql);
+    return properties;
+  }
+
+  <b>@Bean
+  @Autowired
+  public HibernateTransactionManager transactionManager(SessionFactory sessionFactory) {</b>
+    HibernateTransactionManager txManager = new HibernateTransactionManager();
+    txManager.setSessionFactory(sessionFactory);
+    return txManager;
+  }
+}
+</pre>
+<br/><br/>
+
+
+
+<h3>11. Spring Application Context</h3>
+For getting java class beans manually:
+
+<pre class="lang-java">
+package <b>com.selimsql.lesson.configuration</b>;
+
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanCreationException;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
+
+import com.selimsql.lesson.service.UserService;
+<b>
+@Component
+public class SpringAppContext implements ApplicationContextAware</b> {
+
+    private static ApplicationContext appContext;
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+       appContext = applicationContext;
+    }
+
+    private static Object getBean(String beanName) {
+      Assert.notNull(appContext, "ApplicationContext must be not null!");
+
+      try {
+         Object obj = appContext.getBean(beanName);
+         return obj;
+      }
+      catch(NoSuchBeanDefinitionException nsbex) {
+         throw nsbex;
+      }
+      catch(BeanCreationException bcex) {
+         //throw bcex;
+         return null;
+      }
+      catch(Exception ex) {
+         return null;
+      }
+    }
+
+    public static UserService getUserServiceBean() {
+       return (UserService)getBean("userService");
+    }
+}
+</pre>
+<br/><br/>
+
+
+
+<h3>12. Spring Application Initializer</h3>
+No "web.xml" is needed by this initializer class:
+
+<pre class="lang-java">
+package <b>com.selimsql.lesson.configuration</b>;
+
+import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
+
+public class <b>AppInitializer</b> extends AbstractAnnotationConfigDispatcherServletInitializer {
+   <b>
+   @Override
+   protected Class&lt;?&gt;[] getRootConfigClasses() {
+      return new Class[] { RootConfig.class };
+   }</b>
+
+   @Override
+   protected Class&lt;?&gt;[] getServletConfigClasses() {
+      return null;
+   }
+
+   @Override
+   protected String[] getServletMappings() {
+      return new String[] { "/" };
+   }
+}
+</pre>
+<br/><br/>
+
+
+
+<h3>Run Web Application</h3>
+Build and deploy this application on a Web Application Server.
+<br>
+For example, you can deploy this on "Apache Tomcat Version8" server.
+
+<br><br>
+Open a browser and try this link:
+<br>
+<b>http://localhost:8080/SpringMvcHibernateJPA/</b>
+<br><br><br>
+
+
+<h3>Download Project Example</h3>
+Download source: <a href="source/SpringMvcHibernateJPASSqlUserCRUDExample.zip">SpringMvcHibernateJPASSqlUserCRUDExample.zip</a>
+<br/>
+File size: 30KB
+<br/><br/><br>
+
+
+<h4>References</h4>
+<ul>
+ <li><a class="plainbg" href="http://docs.spring.io/spring/docs/4.0.6.RELEASE/spring-framework-reference/htmlsingle/">Spring Framework</a></li>
+</ul>
+<br/><br/>
+
+
+<h4>Related Posts</h4>
+<div class="w3-medium">
+   <?php include 'inc_spring_related_posts.php';?>
+</div>
+
+  </div>
+
+
+ <!--For ADS -->
+  <div class="w3-col m2 w3-center">
+  <header class="w3-container w3-border w3-pale-green">
+    <h4>Related Posts</h4>
+  </header>
+  <div class="w3-white w3-border w3-small">
+     <?php include 'inc_spring_related_posts.php';?>
+  </div>
+
+  <br/>
+  <header class="w3-container w3-border w3-pale-red">
+     <h4>Android Mobile Apps</h4>
+  </header>
+  <div class="w3-white w3-border w3-medium">
+     <?php include 'inc_android_mobile_apps.php';?>
+  </div>
+
+  <!--Ex
+  <div class="w3-red w3-margin-bottom" style="height:200px;">
+   Ads1
+  </div>
+
+   <div class="w3-green w3-margin-bottom" style="height:200px;">
+    Ads2
+   </div>
+
+   <div class="w3-blue w3-margin-bottom" style="height:200px;">
+    Ads3
+   </div>
+   -->
+  </div>
+
+  <div class="w3-col w3-container m1 w3-hide-small">
+  </div>
+</div>
+
+<div class="w3-row">
+  <div class="w3-col w3-container m1 w3-hide-small">
+  </div>
+
+  <div class="w3-col w3-container m8 w3-teal">
+    <p style="text-align:right;font-size:x-small;">Copyright &copy; 2009 - 2019 SelimSql</p>
+  </div>
+
+  <div class="w3-col w3-container m3 w3-hide-small">
+  </div>
+</div>
+
+</body>
+</html>
