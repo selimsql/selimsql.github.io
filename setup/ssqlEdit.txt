@@ -1,0 +1,161 @@
+--Example: "SaleTest" database.
+--SSqlDeveloper Editor: You can test the following statements for "SaleTest" database..
+
+-----------------------------------------------------------------
+--To generate NewDatabase, use menu: "Database->New Database->DbName:SaleTest"
+--Note:If "SaleTest" named database exists, you can generate another one.
+-----------------------------------------------------------------
+--LocalDb Connection : jdbc:selimsql:file:DbName
+--RemoteDb Connection: jdbc:selimsql://HostIp:9933/DbName
+-----------------------------------------------------------------
+--RemoteDb Connection: jdbc:selimsql://localhost:9933/SaleTest
+
+
+-----------------------------------------------------------------
+--DDL operations:
+-----------------------------------------------------------------
+--You can build table: "Product" by selecting and executing the following statement:
+CREATE TABLE Product
+(Id INTEGER NOT NULL,
+ Name VARCHAR(20) NOT NULL,
+ Description VARCHAR(50),
+ Price DECIMAL(15, 2) NOT NULL,
+ ProductDate DATE NOT NULL,
+ Status CHAR NOT NULL,
+ Comment LONGTEXT,
+ Photo BLOB);
+
+CREATE UNIQUE INDEX ProductPk ON Product(Id);
+
+
+--You can build table: "Customer" by selecting and executing the following statement:
+Create Table Customer
+(Id INTEGER NOT NULL,
+ EntryDate DATE NOT NULL,
+ Name VARCHAR(20) NOT NULL,
+ Surname VARCHAR(20) NOT NULL,
+ Sex CHAR NOT NULL,
+ Job VARCHAR(30),
+ Email VARCHAR(30));
+
+CREATE UNIQUE INDEX CustomerPk ON Customer(Id);
+CREATE INDEX CustomerNameIdx ON Customer(Name, Surname);
+
+
+--You can build table: "Order" by selecting and executing the following statement:
+Create Table Order
+(Id INTEGER NOT NULL,
+ CustomerId INTEGER NOT NULL,
+ ProductId INTEGER NOT NULL,
+ OrderTime TIMESTAMP NOT NULL,
+ OrderAmount SMALLINT NOT NULL,
+ UnitPrice DECIMAL(15, 2) NOT NULL,
+ PaymentType VARCHAR(10) NOT NULL,
+ Status VARCHAR(10) NOT NULL);
+
+CREATE UNIQUE INDEX OrderPk ON Order(Id);
+CREATE INDEX OrderCusIdx ON Order(CustomerId);
+CREATE INDEX OrderTimeIdx ON Order(OrderTime);
+
+
+-----------------------------------------------------------------
+--DDL operations:
+-----------------------------------------------------------------
+--You can build table: "Product" by selecting and executing the following statement:
+CREATE TABLE Product
+(Id INTEGER NOT NULL,
+ Name VARCHAR(20) NOT NULL,
+ Description VARCHAR(50),
+ Price DECIMAL(15, 2) NOT NULL,
+ ProductDate DATE NOT NULL,
+ Status CHAR NOT NULL,
+ Comment LONGTEXT,
+ Photo BLOB);
+
+CREATE UNIQUE INDEX ProductPk ON Product(Id);
+
+
+--You can build table: "Customer" by selecting and executing the following statement:
+Create Table Customer
+(Id INTEGER NOT NULL,
+ EntryDate DATE NOT NULL,
+ Name VARCHAR(20) NOT NULL,
+ Surname VARCHAR(20) NOT NULL,
+ Sex CHAR NOT NULL,
+ Job VARCHAR(30),
+ Email VARCHAR(30));
+
+CREATE UNIQUE INDEX CustomerPk ON Customer(Id);
+CREATE INDEX CustomerNameIdx ON Customer(Name, Surname);
+
+
+--You can build table: "Order" by selecting and executing the following statement:
+Create Table Order
+(Id INTEGER NOT NULL,
+ CustomerId INTEGER NOT NULL,
+ ProductId INTEGER NOT NULL,
+ OrderTime TIMESTAMP NOT NULL,
+ OrderAmount SMALLINT NOT NULL,
+ UnitPrice DECIMAL(15, 2) NOT NULL,
+ PaymentType VARCHAR(10) NOT NULL,
+ Status VARCHAR(10) NOT NULL);
+
+CREATE UNIQUE INDEX OrderPk ON Order(Id);
+CREATE INDEX OrderCusIdx ON Order(CustomerId);
+CREATE INDEX OrderTimeIdx ON Order(OrderTime);
+
+
+
+-----------------------------------------------------------------
+--DML operations:
+-----------------------------------------------------------------
+INSERT INTO Product(Id, Name, Description, Price, ProductDate, Status) VALUES(1, 'Product1', null, 12.35, Today(), 'A');
+INSERT INTO Product VALUES(2, 'Product2', null, 23.68, Today(-1), 'P', null, null);
+INSERT INTO Product VALUES(3, 'Product3', null, 80.79, Today(-2), 'A', null, null);
+
+Update Product set Description = Name + ' Desc.' where Description is null;
+Update Product set Comment = 'This is very long description for product:' + Name where id = 2;
+
+--Example:
+Update Product set Photo = binaryfromfile('http://www.selimsql.com/imageTest/Notebook.png') where id = 2
+;
+Update Product set comment = 'This product has a long comment and photo. Photo name is ic_launcher-web.png', photo = binaryfromfile('D:/MyRes/ic_launcher-web.png') where id = 3;
+
+
+Insert into Customer values(11, Datefromstr('28.08.2014','dd.MM.yyyy'), 'Fatih', 'Songul', 'M', null, 'abc@yahoo.com');
+Insert into Customer values(12, Today(-10), 'Selim', 'Eren', 'M', null, 'selim@gmail.com');
+Insert into Customer values(13, Today(-10), 'Habibe', 'Guven', 'F', null, 'hguven@gmail.com');
+
+
+Insert into Order values(101, 11, 1, Now(), 2, 16.45, 'CASH', 'A');
+Insert into Order values(102, 11, 2, Now(-3), 3, 5, 'CREDIT', 'A');
+Insert into Order values(103, 11, 3, Now(-1), 1, 7.65, 'CREDIT', 'A');
+Insert into Order values(104, 12, 1, Now(-3), 2, 16.45, 'CASH', 'A');
+Insert into Order values(105, 12, 2, Now(-7), 5, 5, 'CASH', 'A');
+Insert into Order values(106, 13, 3, Now(-6), 6, 7.65, 'CREDIT', 'A');
+Insert into Order values(107, 13, 2, Now(-5), 2, 7.65, 'CASH', 'A');
+
+
+--3 row
+--CustomerOrderList
+select s.Id, s.OrderTime, (m.Name + ' ' + m.SurName) as Customer, s.OrderAmount, s.UnitPrice, (s.OrderAmount * s.UnitPrice) as Price
+from Customer m, Order s
+where s.CustomerId = m.Id
+  and m.Name = 'Fatih';
+
+--7 row
+--CustomerProductOrderList
+SELECT o.Id, o.OrderTime, p.Name as Product, (c.Name + ' ' + c.Surname) as Customer, o.OrderAmount, o.UnitPrice, (o.OrderAmount * o.UnitPrice) as Price
+FROM Order o, Customer c, Product p
+WHERE o.OrderTime >= DateFromStr('01.06.2015','dd.MM.yyyy')
+ and o.OrderTime <= DateFromStr('01.11.2018','dd.MM.yyyy')
+ and c.Id = o.CustomerId
+ and p.Id = o.ProductId
+ORDER BY 1, 2;
+
+--3 row
+--CustomerOrderSummary
+select c.Id, (c.Name + ' ' + c.SurName) as CusName, count(c.Id) as Count, min(o.Id) MinOrder, max(o.Id) MaxOrder
+from Order o, Customer c
+where c.Id = o.CustomerId
+group by c.Id, (c.Name + ' ' + c.SurName);
