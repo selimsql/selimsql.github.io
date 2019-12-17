@@ -1,1 +1,0 @@
-start javaw.exe -Xmx1024m -classpath "SSqlDbServer.jar;SSqlDbServer.zip" selimsql.server.app.DbServer -Dhttp.proxyHost=? -Dhttp.proxyPort=?
