@@ -1,0 +1,23 @@
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>selimSql</groupId>
+  <artifactId>selimSql</artifactId>
+  <version>1.3.1</version>
+  <packaging>jar</packaging>
+  <name>SelimSqlDB</name>
+  <url>http://www.selimsql.com</url>
+  <description>Selim SQL Database Driver, Version1.3.1</description>
+
+  <licenses>
+    <license>
+      <name>SelimSql License</name>
+      <url>http://www.selimsql.com/setup/lib/Licence_SelimSql.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <scm>
+    <url>http://www.selimsql.com/release/selimSql/selimSql/1.3.1/selimSql-1.3.1.jar</url>
+  </scm>
+  <dependencies>
+  </dependencies>
+</project>
