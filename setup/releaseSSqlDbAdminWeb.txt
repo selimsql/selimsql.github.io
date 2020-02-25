@@ -1,0 +1,1 @@
+downloadBase=https://github.com/selimsql/selimsql.github.io/releases/download/SSqlDbAdminWeb
