@@ -1,7 +1,0 @@
-[DOWN_PARAMS]
-downloadBase=https://github.com/selimsql/selimsql.github.io/releases/download/SSqlDbAdminWeb
-
-[DOWN_FILES=SSqlDbAdminWeb]
-SSqlDbAdminWeb.bat=version=1.01;system=Windows
-SSqlDbAdminWeb.sh=version=1.01;system=Linux,Other
-SSqlDbAdminWeb.zip=1.01
